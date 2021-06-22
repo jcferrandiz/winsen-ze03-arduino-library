@@ -1,6 +1,6 @@
-# winsen-ze03-arduino-library
+# winsen-ze25-arduino-library
 
-> Library to use Winston ZE03 sensor series.
+> Library to use Winston ZE25 sensor series. Based on ZE03 version.
 
 ## Installation
 
