@@ -1,23 +1,23 @@
 /*
-  WinsenZE03.h - This library allows you to set and read the ZE03 Winsen Sensor module.
+  WinsenZE25.h - This library allows you to set and read the ZE25 Winsen Sensor module.
   Created by Fabian Gutierrez, March 12, 20017.
   MIT.
 */
 
 #include "Arduino.h"
-#include "WinsenZE03.h"
+#include "WinsenZE25.h"
 #define DEVMODE true //Set as true to debug
 
-WinsenZE03::WinsenZE03(){
+WinsenZE25::WinsenZE25(){
   _s  = NULL;
 }
 
-void WinsenZE03::begin(Stream *ser, int type){
+void WinsenZE25::begin(Stream *ser, int type){
   _s = ser;
   _type=type;
 }
 
-void WinsenZE03::setAs(bool active){
+void WinsenZE25::setAs(bool active){
   byte setConfig[] = {0xFF, 0x01, 0x78, 0x41, 0x00, 0x00, 0x00, 0x00, 0x46};//QA config
   byte response[9] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
@@ -33,15 +33,12 @@ void WinsenZE03::setAs(bool active){
     _s->readBytes(response,9);
   }
 
-  SerialUSB.println("Response: ");
-  debugPrint(response);
-
   while(_s->available()>0){
     byte c = _s->read();
   }
 }
 
-float WinsenZE03::readContinuous(){
+float WinsenZE25::readContinuous(){
   float ppm = 0;
 
   if (_s->available() > 0) {
@@ -55,8 +52,11 @@ float WinsenZE03::readContinuous(){
     if (DEVMODE) {
       SerialUSB.println("Measure: ");
       debugPrint(measure);
-      ppm = measure[4] * 256 + measure[5];
     }
+
+    ppm = measure[2] * 256 + measure[3]; //Result is in ppb
+    ppm = ppm/1000;                      //Result now is in ppm
+
   } else if (DEVMODE) {
     SerialUSB.println("No data in buffer.");
   }
@@ -64,7 +64,7 @@ float WinsenZE03::readContinuous(){
 }
 
 //This function is not working right now
-float WinsenZE03::readManual(){
+float WinsenZE25::readManual(){
   float ppm;
   //Modify petition format depending on the sensor
   byte petition[] = {0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79};// Petition to get a single result
@@ -75,26 +75,26 @@ float WinsenZE03::readManual(){
   delay(1500);
   // read
   if (_s->available() > 0) {
-    byte measure[9];
-
     while (_s->available() > 0) {
       _s->readBytes(measure, 9);
       // incomingByte = _s.read();
     }
+
     if(DEVMODE){
       SerialUSB.println("Measure: ");
       debugPrint(measure);
-      ppm = measure[4] * 256 + measure[5];
     }
+
   } else if (DEVMODE) {
     SerialUSB.println("No data in buffer.");
   }
 
   // calculate
-  if (measure[0]==0xff && measure[1]==0x2A){
-    ppm = measure[4]*256+measure[5];// this formula depends of the sensor is in the dataSheet
+  if (measure[0]==0xff && measure[1]==0x86){
+    // this formula depends of the sensor is in the dataSheet
+    ppm = measure[2] * 256 + measure[3];  // Result is in ppb
     if (_type == 2){
-      ppm = ppm*0.1;
+      ppm = ppm / 1000;  // Result now is in ppm
     }
   }else{
     ppm=-1;
@@ -102,7 +102,7 @@ float WinsenZE03::readManual(){
   return ppm;
 }
 
-void WinsenZE03::debugPrint(byte arr[]){
+void WinsenZE25::debugPrint(byte arr[]){
   SerialUSB.print(arr[0], HEX);
   SerialUSB.print(" ");
   SerialUSB.print(arr[1], HEX);

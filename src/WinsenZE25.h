@@ -4,8 +4,8 @@
   MIT.
 */
 
-#ifndef WinsenZE03_h
-#define WinsenZE03_h
+#ifndef WinsenZE25_h
+#define WinsenZE25_h
 
 #include "Arduino.h"
 #define CO 1
@@ -21,17 +21,17 @@
 #define QA false
 #define ACTIVE true
 
-class WinsenZE03
+class WinsenZE25
 {
   public:
-    WinsenZE03();
+    WinsenZE25();
     void begin(Stream *ser, int type);
     void setAs(bool active);
     float readManual();
     float readContinuous();
   private:
     void debugPrint(byte arr[]);
-    Stream *_s; //Serial1 - Serial3 are USARTClass objects.
+    Stream *_s; //Serial - Serial1 are USARTClass objects.
     int _type;
 };
 
