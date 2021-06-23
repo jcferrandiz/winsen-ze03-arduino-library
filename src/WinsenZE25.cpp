@@ -7,13 +7,13 @@
 #include "Arduino.h"
 #include "WinsenZE25.h"
 
-WinsenZE25::WinsenZE25(){
-  _s  = NULL;
-}
+WinsenZE25::WinsenZE25() { _s = NULL; }
 
-void WinsenZE25::begin(Stream *ser, int type){
+void WinsenZE25::begin(Stream *ser, int type,
+                       void (*delay_cb)(uint32_t param)) {
   _s = ser;
-  _type=type;
+  _type = type;
+  _delay_cb = delay_cb;
 }
 
 void WinsenZE25::setAs(bool active){
