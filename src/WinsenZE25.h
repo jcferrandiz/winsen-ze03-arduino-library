@@ -21,17 +21,18 @@
 #define QA false
 #define ACTIVE true
 
-class WinsenZE25
-{
-  public:
-    WinsenZE25();
-    void begin(Stream *ser, int type);
-    void setAs(bool active);
-    float readManual();
-    float readContinuous();
-  private:
-    Stream *_s; //Serial - Serial1 are USARTClass objects.
-    int _type;
+class WinsenZE25 {
+ public:
+  WinsenZE25();
+  void begin(Stream *ser, int type, void (*delay_cb)(uint32_t param));
+  void setAs(bool active);
+  float readManual();
+  float readContinuous();
+
+ private:
+  Stream *_s;  // Serial - Serial1 are USARTClass objects.
+  void (*_delay_cb)(uint32_t param);
+  int _type;
 };
 
 #endif
