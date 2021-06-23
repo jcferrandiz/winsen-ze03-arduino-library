@@ -1,7 +1,7 @@
 /*
-  WinsenZE25.h - This library allows you to set and read the ZE25 Winsen Sensor module.
-  Created by Fabian Gutierrez, March 12, 20017.
-  MIT.
+  WinsenZE25.h - This library allows you to set and read the ZE25 Winsen Sensor
+  module. Created by Juan Carlos Ferrándiz June 23, 2021. Based on WinsenZE03.h
+  by Fabian Gutierrez.
 */
 
 #include "Arduino.h"
