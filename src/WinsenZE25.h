@@ -30,7 +30,6 @@ class WinsenZE25
     float readManual();
     float readContinuous();
   private:
-    void debugPrint(byte arr[]);
     Stream *_s; //Serial - Serial1 are USARTClass objects.
     int _type;
 };

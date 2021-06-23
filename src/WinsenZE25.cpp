@@ -6,7 +6,6 @@
 
 #include "Arduino.h"
 #include "WinsenZE25.h"
-#define DEVMODE true //Set as true to debug
 
 WinsenZE25::WinsenZE25(){
   _s  = NULL;
@@ -49,16 +48,10 @@ float WinsenZE25::readContinuous(){
       // incomingByte = _s.read();
     }
 
-    if (DEVMODE) {
-      SerialUSB.println("Measure: ");
-      debugPrint(measure);
-    }
 
     ppm = measure[2] * 256 + measure[3]; //Result is in ppb
     ppm = ppm/1000;                      //Result now is in ppm
 
-  } else if (DEVMODE) {
-    SerialUSB.println("No data in buffer.");
   }
   return ppm;
 }
@@ -79,14 +72,6 @@ float WinsenZE25::readManual(){
       _s->readBytes(measure, 9);
       // incomingByte = _s.read();
     }
-
-    if(DEVMODE){
-      SerialUSB.println("Measure: ");
-      debugPrint(measure);
-    }
-
-  } else if (DEVMODE) {
-    SerialUSB.println("No data in buffer.");
   }
 
   // calculate
@@ -100,24 +85,4 @@ float WinsenZE25::readManual(){
     ppm=-1;
   }
   return ppm;
-}
-
-void WinsenZE25::debugPrint(byte arr[]){
-  SerialUSB.print(arr[0], HEX);
-  SerialUSB.print(" ");
-  SerialUSB.print(arr[1], HEX);
-  SerialUSB.print(" ");
-  SerialUSB.print(arr[2], HEX);
-  SerialUSB.print(" ");
-  SerialUSB.print(arr[3], HEX);
-  SerialUSB.print(" ");
-  SerialUSB.print(arr[4], HEX);
-  SerialUSB.print(" ");
-  SerialUSB.print(arr[5], HEX);
-  SerialUSB.print(" ");
-  SerialUSB.print(arr[6], HEX);
-  SerialUSB.print(" ");
-  SerialUSB.print(arr[7], HEX);
-  SerialUSB.print(" ");
-  SerialUSB.println(arr[8], HEX);
 }
