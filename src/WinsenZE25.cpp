@@ -16,15 +16,16 @@ void WinsenZE25::begin(Stream *ser, int type,
   _delay_cb = delay_cb;
 }
 
-void WinsenZE25::setAs(bool active){
-  byte setConfig[] = {0xFF, 0x01, 0x78, 0x41, 0x00, 0x00, 0x00, 0x00, 0x46};//QA config
+void WinsenZE25::setAs(bool active) {
+  byte setConfig[] = {0xFF, 0x01, 0x78, 0x41, 0x00,
+                      0x00, 0x00, 0x00, 0x46};  // QA config
   byte response[9] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-  if (active){
-    setConfig[3] =0x40;
-    setConfig[8] =0x47;
+  if (active) {
+    setConfig[3] = 0x40;
+    setConfig[8] = 0x47;
   }
-  _s->write(setConfig,sizeof(setConfig));
+  _s->write(setConfig, sizeof(setConfig));
   // Wait for the response
   delay(2000);
   //Flush the incoming buffer
