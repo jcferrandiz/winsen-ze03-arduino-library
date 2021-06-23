@@ -27,18 +27,18 @@ void WinsenZE25::setAs(bool active) {
   }
   _s->write(setConfig, sizeof(setConfig));
   // Wait for the response
-  delay(2000);
-  //Flush the incoming buffer
+  _delay_cb(2000);
+  // Flush the incoming buffer
   if (_s->available() > 0) {
-    _s->readBytes(response,9);
+    _s->readBytes(response, 9);
   }
 
-  while(_s->available()>0){
+  while (_s->available() > 0) {
     byte c = _s->read();
   }
 }
 
-float WinsenZE25::readContinuous(){
+float WinsenZE25::readContinuous() {
   float ppm = 0;
 
   if (_s->available() > 0) {
@@ -49,24 +49,25 @@ float WinsenZE25::readContinuous(){
       // incomingByte = _s.read();
     }
 
-
-    ppm = measure[2] * 256 + measure[3]; //Result is in ppb
-    ppm = ppm/1000;                      //Result now is in ppm
-
+    ppm = measure[2] * 256 + measure[3];  // Result in ppb
+    ppm = ppm / 1000;                     // Result in ppm
   }
   return ppm;
 }
 
-//This function is not working right now
-float WinsenZE25::readManual(){
+float WinsenZE25::readManual() {
   float ppm;
-  //Modify petition format depending on the sensor
-  byte petition[] = {0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79};// Petition to get a single result
-  byte measure[9] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};  // Space for the response
-  _s->write(petition,sizeof(petition));
-  
-  //TO DO: Modify this delay and use a callback in this function
-  delay(1500);
+  byte petition[] = {
+      0xFF, 0x01, 0x86, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x79};  // Petition to get a single result
+
+  byte measure[9] = {0x00, 0x00, 0x00, 0x00, 0x00,
+                     0x00, 0x00, 0x00, 0x00};  // Space for the response
+
+  _s->write(petition, sizeof(petition));
+
+  _delay_cb(1500);
+
   // read
   if (_s->available() > 0) {
     while (_s->available() > 0) {
@@ -76,14 +77,13 @@ float WinsenZE25::readManual(){
   }
 
   // calculate
-  if (measure[0]==0xff && measure[1]==0x86){
-    // this formula depends of the sensor is in the dataSheet
-    ppm = measure[2] * 256 + measure[3];  // Result is in ppb
-    if (_type == 2){
-      ppm = ppm / 1000;  // Result now is in ppm
+  if (measure[0] == 0xff && measure[1] == 0x86) {
+    ppm = measure[2] * 256 + measure[3];  // Result in ppb
+    if (_type == 2) {
+      ppm = ppm / 1000;  // Result in ppm
     }
-  }else{
-    ppm=-1;
+  } else {
+    ppm = -1;
   }
   return ppm;
 }
