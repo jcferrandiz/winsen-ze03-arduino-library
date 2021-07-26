@@ -35,6 +35,7 @@ void WinsenZE25::setAs(bool active) {
 
   while (_s->available() > 0) {
     byte c = _s->read();
+    _delay_cb(1);
   }
 }
 
@@ -46,6 +47,7 @@ float WinsenZE25::readContinuous() {
 
     while (_s->available() > 0) {
       _s->readBytes(measure, 9);
+      _delay_cb(1);
       // incomingByte = _s.read();
     }
 
@@ -63,7 +65,6 @@ float WinsenZE25::readManual() {
 
   byte measure[9] = {0x00, 0x00, 0x00, 0x00, 0x00,
                      0x00, 0x00, 0x00, 0x00};  // Space for the response
-
   _s->write(petition, sizeof(petition));
 
   _delay_cb(1500);
@@ -72,6 +73,7 @@ float WinsenZE25::readManual() {
   if (_s->available() > 0) {
     while (_s->available() > 0) {
       _s->readBytes(measure, 9);
+      _delay_cb(1);
       // incomingByte = _s.read();
     }
   }
